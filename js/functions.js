@@ -3,7 +3,7 @@ function isStringFit(str, guessLength) {
   return str.length <= guessLength;
 }
 
-// console.log(isStringFit('проверяемая строка', 20));
+isStringFit('проверяемая строка', 20);
 // console.log(isStringFit('проверяемая строка', 18));
 // console.log(isStringFit('проверяемая строка', 10));
 
@@ -19,7 +19,7 @@ function isPalindrome(str) {
   return true;
 }
 
-// console.log(isPalindrome('топот'));
+isPalindrome('топот');
 // console.log(isPalindrome('ДовОд'));
 // console.log(isPalindrome('Кекс'));
 // console.log(isPalindrome('Лёша на полке клопа нашёл '));
@@ -49,7 +49,7 @@ function getAllNumbers(str) {
   return parseInt(result, 10) || NaN;
 }
 
-// console.log(getAllNumbers('2023 год'));
+getAllNumbers('2023 год');
 // console.log(getAllNumbers('ECMAScript 2022'));
 // console.log(getAllNumbers('1 кефир, 0.5 батона'));
 // console.log(getAllNumbers('агент 007'));
