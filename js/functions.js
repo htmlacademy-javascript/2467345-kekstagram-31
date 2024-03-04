@@ -57,3 +57,30 @@ getAllNumbers('2023 год');
 // console.log(getAllNumbers(2023));
 // console.log(getAllNumbers(-1));
 // console.log(getAllNumbers(1.5));
+
+
+function getTimeFromStr(time){
+  const separateTime = time.split(':');
+  const hours = parseInt(separateTime[0], 10);
+  const minutes = parseInt(separateTime[1], 10);
+
+  return hours * 60 + minutes;
+}
+
+function meetingInBusinessHours(startTime, endTime, startMeetingTime, duration){
+  const endMeetingTime = getTimeFromStr(startMeetingTime) + duration;
+
+  if(getTimeFromStr(startTime) <= getTimeFromStr(startMeetingTime) &&
+  getTimeFromStr(endTime) >= endMeetingTime){
+    return true;
+  } else{
+    return false;
+  }
+
+}
+meetingInBusinessHours('08:00', '17:30', '14:00', 90);
+// console.log(meetingInBusinessHours('08:00', '17:30', '14:00', 90));
+// console.log(meetingInBusinessHours('8:0', '10:0', '8:0', 120));
+// console.log(meetingInBusinessHours('08:00', '14:30', '14:00', 90));
+// console.log(meetingInBusinessHours('14:00', '17:30', '08:0', 90));
+// console.log(meetingInBusinessHours('8:00', '17:30', '08:00', 900));
