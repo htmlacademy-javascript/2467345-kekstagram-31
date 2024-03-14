@@ -53,11 +53,14 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0) + string.slice(1).toLowerCase();
 }
 
+const isEscapeKey = (evt) => evt.key === 'Escape';
+
 export {
   getRandomArrayElement,
   getRandomArrayElements,
   getRandomInteger,
   createIdGenerator,
   createRandomIdFromRangeGenerator,
-  capitalizeFirstLetter
+  capitalizeFirstLetter,
+  isEscapeKey
 };

@@ -1,3 +1,1 @@
-import './renderPost.js';
-
-
+import './gallery.js';
