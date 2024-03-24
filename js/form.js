@@ -1,19 +1,57 @@
 import { isEscapeKey } from './util.js';
 import '/vendor/pristine/pristine.min';
+import {percentToFloat} from './util.js';
+import '/vendor/nouislider/nouislider.js';
 
 const imgInput = document.querySelector('.img-upload__input');
 const imgOverlay = document.querySelector('.img-upload__overlay');
 const imgUploadForm = document.querySelector('.img-upload__form');
+const imgPreview = document.querySelector('.img-upload__preview>img');
 
 const hashtagsInput = document.querySelector('.text__hashtags');
 const descriptionInput = document.querySelector('.text__description');
 
+//переменные для изменения размера изображения
+const MIN_SCALE = 0.25;
+const MAX_SCALE = 1;
+const SCALE_STEP = 0.25;
+
+const fieldsetSize = document.querySelector('.img-upload__scale');
+const smallerButton = fieldsetSize.querySelector('.scale__control--smaller');
+const size = fieldsetSize.querySelector('.scale__control--value');
+const biggerButton = fieldsetSize.querySelector('.scale__control--bigger');
+
+//переменные для фильтров
+const effectsList = document.querySelector('.effects__list');
+const effectSlider = document.querySelector('.img-upload__effect-level');
+const effectSliderInput = effectSlider.querySelector('.effect-level__slider');
+const effectSliderValue = effectSlider.querySelector('.effect-level__value');
+noUiSlider.create(effectSliderInput,{
+  range: {
+    min: 0,
+    max: 100,
+  },
+  start: 80,
+  step: 1,
+  connect: 'lower',
+});
+
+let filterName = '';
+let filterUnit = '';
+effectSliderInput.noUiSlider.on('update', () => {
+  effectSliderValue.value = effectSliderInput.noUiSlider.get();
+  imgPreview.style.filter = `${filterName}(${ effectSliderValue.value }${filterUnit})`;
+  // console.log(`${filterName}(${ parseFloat(effectSliderValue.value) }${filterUnit})`);
+});
+
 imgInput.addEventListener('change',(evt)=>{
   imgOverlay.classList.remove('hidden');
+  effectSlider.classList.add('hidden');
   document.body.classList.add('modal-open');
 
+  //загрузка изображения в превью и фильтры
   const downloadedImg = URL.createObjectURL(evt.target.files[0]);
-  const imgPreview = document.querySelector('.img-upload__preview>img');
+
   imgPreview.src = downloadedImg;
 
   const imgsPreviewEffect = document.querySelectorAll('.effects__preview');
@@ -21,12 +59,113 @@ imgInput.addEventListener('change',(evt)=>{
     imgPreviewEffect.style.backgroundImage = `url(${ downloadedImg })`;
   });
 
-  //добавление listeners
+  //изменение размера изображения
+  function smallerHandler(){
+    let scale = percentToFloat(size.value);
+    if (scale > MIN_SCALE) {
+      scale = scale - SCALE_STEP;
+      size.value = `${scale * 100}%`;
+      imgPreview.style.transform = `scale(${ scale })`;
+    }
+  }
+  function biggerHandler(){
+    let scale = percentToFloat(size.value);
+    if (scale < MAX_SCALE) {
+      scale = scale + SCALE_STEP;
+      size.value = `${scale * 100}%`;
+      imgPreview.style.transform = `scale(${ scale })`;
+    }
+  }
+  smallerButton.addEventListener('click', smallerHandler);
+  biggerButton.addEventListener('click', biggerHandler);
+
+  //Приминение фильтров
+  function effectsHandler(){
+    const effectName = effectsList.querySelector('input:checked').value;
+    effectSlider.classList.remove('hidden');
+
+    switch (effectName){
+      case 'none':
+        effectSliderValue.value = 0;
+        imgPreview.style.filter = 'none';
+        effectSlider.classList.add('hidden');
+        break;
+      case 'chrome':
+        filterName = 'grayscale';
+        filterUnit = '';
+        effectSliderInput.noUiSlider.updateOptions({
+          range: {
+            min: 0,
+            max: 1
+          },
+          start: 1,
+          step: 0.1,
+        });
+        effectSliderInput.noUiSlider.set(1);
+        break;
+      case 'sepia':
+        filterName = 'sepia';
+        filterUnit = '';
+        effectSliderInput.noUiSlider.updateOptions({
+          range: {
+            min: 0,
+            max: 1
+          },
+          start: 1,
+          step: 0.1
+        });
+        effectSliderInput.noUiSlider.set(1);
+        break;
+      case 'marvin':
+        filterName = 'invert';
+        filterUnit = '%';
+        effectSliderInput.noUiSlider.updateOptions({
+          range: {
+            min: 0,
+            max: 100
+          },
+          start: 100,
+          step: 1
+        });
+        effectSliderInput.noUiSlider.set(100);
+        break;
+      case 'phobos':
+        filterName = 'blur';
+        filterUnit = 'px';
+        effectSliderInput.noUiSlider.updateOptions({
+          range: {
+            min: 0,
+            max: 3
+          },
+          start: 3,
+          step: 0.1
+        });
+        effectSliderInput.noUiSlider.set(3);
+        break;
+      case 'heat':
+        filterName = 'brightness';
+        filterUnit = '';
+        effectSliderInput.noUiSlider.updateOptions({
+          range: {
+            min: 1,
+            max: 3
+          },
+          start: 3,
+          step: 0.1
+        });
+        effectSliderInput.noUiSlider.set(3);
+        break;
+    }
+    // imgPreview.style.filter = 'grayscale(1)';
+  }
+  effectsList.addEventListener('change', effectsHandler);
+
+  //добавление listeners на закрытие модульного окна
   const closeButton = imgOverlay.querySelector('.img-upload__cancel');
   closeButton.addEventListener('click', closeImgOverlay);
   document.addEventListener('keydown', closeByKey);
 
-  //прифокусе на интпутах отключаем закритие на Ecs
+  //при фокусе на интпутах отключаем закритие на Ecs
   disableKeyCloseByInputOnfocus(hashtagsInput);
   disableKeyCloseByInputOnfocus(descriptionInput);
 
@@ -36,6 +175,14 @@ imgInput.addEventListener('change',(evt)=>{
 
     closeButton.removeEventListener('click', closeImgOverlay);
     document.removeEventListener('keydown', closeByKey);
+
+    smallerButton.removeEventListener('click', smallerHandler);
+    biggerButton.removeEventListener('click', biggerHandler);
+
+    effectsList.removeEventListener('change', effectsHandler);
+    effectSliderValue.value = 0;
+    effectSliderInput.noUiSlider.set(0);
+    imgPreview.style.filter = 'none';
 
     imgUploadForm.reset();
   }
@@ -56,7 +203,6 @@ imgInput.addEventListener('change',(evt)=>{
     };
   }
 });
-
 
 const pristine = new Pristine(imgUploadForm);
 
