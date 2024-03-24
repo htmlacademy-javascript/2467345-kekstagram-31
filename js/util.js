@@ -53,6 +53,10 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0) + string.slice(1).toLowerCase();
 }
 
+function percentToFloat(str){
+  return parseInt(str.slice(0,-1),10) / 100;
+}
+
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 export {
@@ -62,5 +66,6 @@ export {
   createIdGenerator,
   createRandomIdFromRangeGenerator,
   capitalizeFirstLetter,
-  isEscapeKey
+  isEscapeKey,
+  percentToFloat
 };
