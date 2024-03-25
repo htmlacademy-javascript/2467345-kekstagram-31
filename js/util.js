@@ -59,6 +59,44 @@ function percentToFloat(str){
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
+const errorTemplate = document.querySelector('#data-error').content.querySelector('section');
+function showAlert(message) {
+  const errorElement = errorTemplate.cloneNode(true);
+  const errorTitle = errorElement.querySelector('h2');
+  errorTitle.textContent = message;
+
+  document.body.insertAdjacentElement('beforeend',errorElement);
+
+  setTimeout(() => {
+    errorElement.remove();
+  }, 5000);
+}
+
+const successTemplate = document.querySelector('#success').content.querySelector('section');
+const successElement = successTemplate.cloneNode(true);
+const closeButton = successElement.querySelector('button');
+
+function showSuccess() {
+  closeButton.addEventListener('click', closeSuccessMessage);
+  document.addEventListener('keydown', closeByKey);
+
+  document.body.insertAdjacentElement('beforeend',successElement);
+
+}
+
+function closeSuccessMessage(){
+  successElement.remove();
+  document.removeEventListener('keydown', closeByKey);
+  // closeButton.removeEventListener('click', closeSuccessMessage());
+}
+
+function closeByKey(evt){
+  if(isEscapeKey(evt)){
+    evt.preventDefault();
+    closeSuccessMessage();
+  }
+}
+
 export {
   getRandomArrayElement,
   getRandomArrayElements,
@@ -67,5 +105,7 @@ export {
   createRandomIdFromRangeGenerator,
   capitalizeFirstLetter,
   isEscapeKey,
-  percentToFloat
+  percentToFloat,
+  showAlert,
+  showSuccess
 };
