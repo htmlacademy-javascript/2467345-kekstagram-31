@@ -1,3 +1,4 @@
+
 const getRandomInteger = (a, b) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -97,6 +98,14 @@ function closeByKey(evt){
   }
 }
 
+const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
 export {
   getRandomArrayElement,
   getRandomArrayElements,
@@ -107,5 +116,6 @@ export {
   isEscapeKey,
   percentToFloat,
   showAlert,
-  showSuccess
+  showSuccess,
+  debounce
 };
