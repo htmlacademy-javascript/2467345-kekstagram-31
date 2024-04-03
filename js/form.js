@@ -2,7 +2,7 @@ import { isEscapeKey } from './util.js';
 import '/vendor/pristine/pristine.min';
 import {percentToFloat} from './util.js';
 import '/vendor/nouislider/nouislider.js';
-import { showAlert } from './util.js';
+import { showError } from './util.js';
 import { sendData } from './api.js';
 import { showSuccess } from './util.js';
 
@@ -24,6 +24,31 @@ const fieldsetSize = document.querySelector('.img-upload__scale');
 const smallerButton = fieldsetSize.querySelector('.scale__control--smaller');
 const size = fieldsetSize.querySelector('.scale__control--value');
 const biggerButton = fieldsetSize.querySelector('.scale__control--bigger');
+
+const pristine = new Pristine(imgUploadForm);
+
+const errorBlock = document.querySelectorAll('.img-upload__field-wrapper');
+const errorBlockHashTags = errorBlock[0];
+const errorBlockDescription = errorBlock[1];
+const errorDivRepeat = document.createElement('div');
+errorDivRepeat.textContent = 'Хэштеги повторяются';
+errorDivRepeat.classList.add('pristine-error');
+errorDivRepeat.classList.add('img-upload__field-wrapper--error');
+
+const errorDivCount = document.createElement('div');
+errorDivCount.textContent = 'Введите до 5 хештегов';
+errorDivCount.classList.add('pristine-error');
+errorDivCount.classList.add('img-upload__field-wrapper--error');
+
+const errorDivValid = document.createElement('div');
+errorDivValid.textContent = 'введён невалидный хештег';
+errorDivValid.classList.add('pristine-error');
+errorDivValid.classList.add('img-upload__field-wrapper--error');
+
+const errorDivLength = document.createElement('div');
+errorDivLength.textContent = 'Введите до 140 символов';
+errorDivLength.classList.add('pristine-error');
+errorDivLength.classList.add('img-upload__field-wrapper--error');
 
 //переменные для фильтров
 const effectsList = document.querySelector('.effects__list');
@@ -49,6 +74,7 @@ let filterName = '';
 let filterUnit = '';
 effectSliderInput.noUiSlider.on('update', () => {
   effectSliderValue.value = effectSliderInput.noUiSlider.get();
+  effectSliderValue.value = Math.round(effectSliderValue.value * 10) / 10;
   imgPreview.style.filter = `${filterName}(${ effectSliderValue.value }${filterUnit})`;
   // console.log(`${filterName}(${ parseFloat(effectSliderValue.value) }${filterUnit})`);
 });
@@ -193,14 +219,22 @@ function closeImgOverlay(){
   effectSliderValue.value = 0;
   effectSliderInput.noUiSlider.set(0);
   imgPreview.style.filter = 'none';
+  imgPreview.style.transform = 'scale(100%)';
+
+  errorDivRepeat.remove();
+  errorDivCount.remove();
+  errorDivValid.remove();
+  errorDivLength.remove();
 
   imgUploadForm.reset();
 }
 
 function closeByKey(e){
   if(isEscapeKey(e)){
-    e.preventDefault();
-    closeImgOverlay();
+    if(!document.querySelector('.error')){
+      e.preventDefault();
+      closeImgOverlay();
+    }
   }
 }
 
@@ -213,46 +247,11 @@ function disableKeyCloseByInputOnfocus(input){
   };
 }
 
-
-const pristine = new Pristine(imgUploadForm);
-
-const errorBlock = document.querySelectorAll('.img-upload__field-wrapper');
-const errorBlockHashTags = errorBlock[0];
-const errorBlockDescription = errorBlock[1];
-const errorDivRepeat = document.createElement('div');
-errorDivRepeat.textContent = 'Хэштеги повторяются';
-errorDivRepeat.classList.add('hashtags-error__repeat');
-errorDivRepeat.classList.add('.img-upload__field-wrapper--error');
-errorBlockHashTags.append(errorDivRepeat);
-errorDivRepeat.classList.add('hidden');
-
-const errorDivCount = document.createElement('div');
-errorDivCount.textContent = 'Введите до 5 хештегов';
-errorDivCount.classList.add('hashtags-error__count');
-errorDivCount.classList.add('.img-upload__field-wrapper--error');
-errorBlockHashTags.append(errorDivCount);
-errorDivCount.classList.add('hidden');
-
-const errorDivValid = document.createElement('div');
-errorDivValid.textContent = 'введён невалидный хештег';
-errorDivValid.classList.add('hashtags-error__valid');
-errorDivValid.classList.add('.img-upload__field-wrapper--error');
-errorBlockHashTags.append(errorDivValid);
-errorDivValid.classList.add('hidden');
-
-const errorDivLength = document.createElement('div');
-errorDivLength.textContent = 'Введите до 140 символов';
-errorDivLength.classList.add('hashtags-error__valid');
-errorDivLength.classList.add('.img-upload__field-wrapper--error');
-errorBlockDescription.append(errorDivLength);
-errorDivLength.classList.add('hidden');
-
-
 function validateHashTags(hashtags){
   //прятать ошибки после каждого изменения поля, чтобы показать только нужные при проверке
-  errorDivRepeat.classList.add('hidden');
-  errorDivCount.classList.add('hidden');
-  errorDivValid.classList.add('hidden');
+  errorDivRepeat.remove();
+  errorDivCount.remove();
+  errorDivValid.remove();
 
   let result = true;
   const hashtagRegExp = /^#[a-zа-яё0-9]{1,19}$/i;
@@ -267,10 +266,10 @@ function validateHashTags(hashtags){
   if(arrayHashTags.length > 5 || hasDuplicates){
     // console.log('Есть дубликаты или больше 5-ти хештегов');
     if(hasDuplicates){
-      errorDivRepeat.classList.remove('hidden');
+      errorBlockHashTags.append(errorDivRepeat);
     }
     if(arrayHashTags.length > 5){
-      errorDivCount.classList.remove('hidden');
+      errorBlockHashTags.append(errorDivCount);
     }
     result = false;
   }
@@ -289,7 +288,7 @@ function validateHashTags(hashtags){
   if(boolHashtagsArray.includes(false)){
     const errorIndex = boolHashtagsArray.indexOf(false);
     errorDivValid.textContent = `хештег под номером ${ errorIndex + 1} невалидный`;
-    errorDivValid.classList.remove('hidden');
+    errorBlockHashTags.append(errorDivValid);
     result = false;
   }
   // console.log('tags: ' + result);
@@ -297,10 +296,10 @@ function validateHashTags(hashtags){
 }
 
 function validateDescription(description){
-  errorDivLength.classList.add('hidden');
+  errorDivLength.remove();
   let result = true;
   if(description.length > 140){
-    errorDivLength.classList.remove('hidden');
+    errorBlockDescription.append(errorDivLength);
     result = false;
   }
   // console.log('desc: ' + result);
@@ -337,7 +336,7 @@ imgUploadForm.addEventListener('submit',(evt)=>{
       .then(closeImgOverlay)
       .then(showSuccess)
       .catch((err)=>{
-        showAlert(err.message);
+        showError(err.message);
       })
       .finally(unblockSubmitButton);
   }
