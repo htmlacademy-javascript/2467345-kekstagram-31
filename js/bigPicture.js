@@ -20,9 +20,11 @@ function renderBigPicture({url,description,likes,comments}){
   if (comments.length >= commentsShown) {
     commentShownCount.textContent = commentsShown;
     commentsContainer.append(renderComment(comments,0,commentsShown));
+    loadComments.classList.remove('hidden');
   } else{
     commentShownCount.textContent = comments.length;
     commentsContainer.append(renderComment(comments,0,comments.length));
+    loadComments.classList.add('hidden');
   }
   commentTotalCount.textContent = comments.length;
   caption.textContent = description;
@@ -57,7 +59,8 @@ function renderBigPicture({url,description,likes,comments}){
 
   function onCommentsLoad(){
     const lastCommentsCount = comments.length - commentsShown;
-    if (lastCommentsCount < LOAD_COMMENTS_SIZE){
+    if (lastCommentsCount <= LOAD_COMMENTS_SIZE){
+      loadComments.classList.add('hidden');
       commentsContainer.append(renderComment(comments, commentsShown, commentsShown + lastCommentsCount));
       commentsShown += lastCommentsCount;
       commentShownCount.textContent = commentsShown;
@@ -83,7 +86,7 @@ function renderComment(comments,start,end){
     newImg.height = 35;
 
     const newText = document.createElement('p');
-    newText.classList.add('.social__text');
+    newText.classList.add('social__text');
     newText.textContent = comments[i].message;
 
     newComment.append(newImg);
