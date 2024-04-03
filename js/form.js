@@ -59,6 +59,7 @@ imgInput.addEventListener('change',(evt)=>{
   document.body.classList.add('modal-open');
 
   //загрузка изображения в превью и фильтры
+  //загрузку изображения в поле загрузки, уже реализовал в одном из предыдущих заданий
   const downloadedImg = URL.createObjectURL(evt.target.files[0]);
 
   imgPreview.src = downloadedImg;
