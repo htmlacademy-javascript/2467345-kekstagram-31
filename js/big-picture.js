@@ -1,4 +1,6 @@
 import { isEscapeKey } from './util.js';
+const LOAD_COMMENTS_SIZE = 5;//Сколько загружать комментариев
+const COMMENT_AVATAR_SIZE = 35;
 const bigPicture = document.querySelector('.big-picture');
 
 const bigPictureImage = bigPicture.querySelector('.big-picture__img').querySelector('img');
@@ -10,7 +12,7 @@ const commentsContainer = bigPicture.querySelector('.social__comments');
 
 const loadComments = bigPicture.querySelector('.social__comments-loader');
 const closeButton = bigPicture.querySelector('.big-picture__cancel');
-const LOAD_COMMENTS_SIZE = 5;//Сколько загружать комментариев
+
 
 function renderBigPicture({url,description,likes,comments}){
   let commentsShown = LOAD_COMMENTS_SIZE;
@@ -82,8 +84,8 @@ function renderComment(comments,start,end){
     newImg.classList.add('social__picture');
     newImg.src = comments[i].avatar;
     newImg.alt = comments[i].name;
-    newImg.width = 35;
-    newImg.height = 35;
+    newImg.width = COMMENT_AVATAR_SIZE;
+    newImg.height = COMMENT_AVATAR_SIZE;
 
     const newText = document.createElement('p');
     newText.classList.add('social__text');

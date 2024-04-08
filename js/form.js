@@ -130,7 +130,6 @@ imgUploadForm.addEventListener('submit',(evt)=>{
   evt.preventDefault();
   const isValid = pristine.validate();
   if(isValid){
-    // console.log("Форма успошно отправлена!");
     const formData = new FormData(evt.target);
     blockSubmitButton();
     sendData(formData)

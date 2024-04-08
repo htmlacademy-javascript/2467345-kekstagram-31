@@ -1,3 +1,6 @@
+const MAX_TAGS = 5;
+const MAX_DESCRIPTION = 140;
+
 const errorBlock = document.querySelectorAll('.img-upload__field-wrapper');
 const errorBlockHashTags = errorBlock[0];
 const errorBlockDescription = errorBlock[1];
@@ -37,35 +40,32 @@ function validateHashTags(hashtags){
 
 
   const hasDuplicates = arrayHashTags.length !== [...new Set(arrayHashTags)].length;
-  if(arrayHashTags.length > 5 || hasDuplicates){
-    // console.log('Есть дубликаты или больше 5-ти хештегов');
+  if(arrayHashTags.length > MAX_TAGS || hasDuplicates){
     if(hasDuplicates){
       errorBlockHashTags.append(errorDivRepeat);
     }
-    if(arrayHashTags.length > 5){
+    if(arrayHashTags.length > MAX_TAGS){
       errorBlockHashTags.append(errorDivCount);
     }
     result = false;
   }
 
 
-  const boolHashtagsArray = [];
+  const boolHashtags = [];
   arrayHashTags.forEach((hashtag)=>{
     if(!hashtagRegExp.test(hashtag)){
-      // console.log('Хэштеги не прошли валидацию!');
-      boolHashtagsArray.push(false);
+      boolHashtags.push(false);
     } else{
-      boolHashtagsArray.push(true);
+      boolHashtags.push(true);
     }
   });
 
-  if(boolHashtagsArray.includes(false)){
-    const errorIndex = boolHashtagsArray.indexOf(false);
+  if(boolHashtags.includes(false)){
+    const errorIndex = boolHashtags.indexOf(false);
     errorDivValid.textContent = `хештег под номером ${ errorIndex + 1} невалидный`;
     errorBlockHashTags.append(errorDivValid);
     result = false;
   }
-  // console.log('tags: ' + result);
   return result;
 }
 
@@ -73,11 +73,10 @@ function validateHashTags(hashtags){
 function validateDescription(description){
   errorDivLength.remove();
   let result = true;
-  if(description.length > 140){
+  if(description.length > MAX_DESCRIPTION){
     errorBlockDescription.append(errorDivLength);
     result = false;
   }
-  // console.log('desc: ' + result);
   return result;
 }
 

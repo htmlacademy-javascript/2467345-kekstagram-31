@@ -1,4 +1,4 @@
-import { renderBigPicture } from './bigPicture';
+import { renderBigPicture } from './big-picture';
 import { getRandomArrayElements } from './util';
 
 const postsContainer = document.querySelector('.pictures');
@@ -45,14 +45,14 @@ function renderPosts(postsData){
   postsContainer.append(postsFragment);
 
   //отрисовка bigPicture при нажатии
-  const onPostOpen = function(){
+  const openPost = function(){
     const postId = parseInt(this.id,10);
     renderBigPicture(postsData.find(({id}) => id === postId));
   };
   const posts = document.querySelectorAll('.picture');
   //добавление слушателей на каждый пост
   posts.forEach((post) => {
-    post.addEventListener('click', onPostOpen);
+    post.addEventListener('click', openPost);
   });
 
   filterSection.classList.remove('img-filters--inactive');

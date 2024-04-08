@@ -1,4 +1,5 @@
 import { isEscapeKey } from './util';
+const TIMEOUT = 500;
 
 const dataErrorTemplate = document.querySelector('#data-error').content.querySelector('section');
 function showAlert(message) {
@@ -9,7 +10,7 @@ function showAlert(message) {
 
   setTimeout(() => {
     dataErrorElement.remove();
-  }, 5000);
+  }, TIMEOUT);
 }
 
 const errorTemplate = document.querySelector('#error').content.querySelector('section');
@@ -73,7 +74,6 @@ function closeSuccessMessage(){
   successElement.remove();
   document.removeEventListener('keydown', closeByKey);
   document.removeEventListener('click', clickOutsideModal);
-  // closeButton.removeEventListener('click', closeSuccessMessage());
 }
 
 function closeByKey(evt){

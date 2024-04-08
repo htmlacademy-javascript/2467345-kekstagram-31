@@ -1,11 +1,11 @@
 import { percentToFloat } from './util';
 
-const imgPreview = document.querySelector('.img-upload__preview>img');
 //переменные для изменения размера изображения
 const MIN_SCALE = 0.25;
 const MAX_SCALE = 1;
 const SCALE_STEP = 0.25;
 
+const imgPreview = document.querySelector('.img-upload__preview>img');
 const fieldsetSize = document.querySelector('.img-upload__scale');
 const size = fieldsetSize.querySelector('.scale__control--value');
 const smallerButton = fieldsetSize.querySelector('.scale__control--smaller');
