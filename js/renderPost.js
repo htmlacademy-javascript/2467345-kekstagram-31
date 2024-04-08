@@ -1,5 +1,6 @@
 import { renderBigPicture } from './bigPicture';
 import { getRandomArrayElements } from './util';
+
 const postsContainer = document.querySelector('.pictures');
 const postTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const postsFragment = document.createDocumentFragment();
