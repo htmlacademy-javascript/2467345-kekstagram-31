@@ -6,7 +6,6 @@ const getRandomInteger = (a, b) => {
   return Math.floor(result);
 };
 
-// const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 const getRandomArrayElements = (elements, count) =>{
   if(count < 1){
     return elements[getRandomInteger(0, elements.length - 1)];
@@ -14,16 +13,16 @@ const getRandomArrayElements = (elements, count) =>{
     return elements;
   }
 
-  const result = [];
+  const resultElements = [];
   for(let i = 0; i < count; i++){
     let currentValue = elements[getRandomInteger(0, elements.length - 1)];
-    while(result.includes(currentValue)){
+    while(resultElements.includes(currentValue)){
       currentValue = elements[getRandomInteger(0, elements.length - 1)];
     }
-    result.push(currentValue);
+    resultElements.push(currentValue);
   }
 
-  return result;
+  return resultElements;
 };
 
 function percentToFloat(str){

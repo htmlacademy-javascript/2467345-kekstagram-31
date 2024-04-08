@@ -1,10 +1,10 @@
-import './renderPost.js';
+import './render-post.js';
 import './form.js';
 import { getData } from './api.js';
 import { showAlert } from './message.js';
 import { debounce } from './util.js';
-import { renderPosts } from './renderPost.js';
-import { setFilterClick } from './renderPost.js';
+import { renderPosts } from './render-post.js';
+import { setFilterClick } from './render-post.js';
 
 const REREDER_DELAY = 500;
 

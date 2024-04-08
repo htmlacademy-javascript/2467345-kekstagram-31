@@ -87,7 +87,6 @@ function effectsHandler(){
       effectSliderInput.noUiSlider.set(3);
       break;
   }
-  // imgPreview.style.filter = 'grayscale(1)';
 }
 
 function resetFilters(){
